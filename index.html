@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Schenker Techtalk - Docker</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css">
+		<link rel="stylesheet" href="css/theme/schenker-theme.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+	<div class="logo"></div>
+		<div class="reveal">
+
+			<div class="slides">
+				<section>
+					<h2>Schenker AG TechTalk</h1>
+					<h4>Docker</h3>
+						<img class="no-boarder" data-src="images/docker.svg" height="150pt" width="150pt">
+						<aside class="notes">
+							Keep calm and breath Marc :) and please don't forget to introduce yourself.
+						</aside>
+				</section>
+				<section>
+					<section>
+						<h2>What is Docker?</h2>
+						<img class="no-boarder" data-src="images/isolation.jpg" height="300pt" width="300pt"/>
+						<aside class="notes">
+							Docker is a Tool for running Applications in an isolated environment.
+							It gives you advantages similar running your application inside of a virtual machine.
+						</aside>
+					</section>
+					<section>
+						<ol>
+							<li>Same environment</li>
+							<li>Sandbox Projects</li>
+							<li>It just works</li>
+						</ol>
+
+						<aside class="notes">
+							1. **Same environment**
+							Some of those advantages are, your app always runs in exactly the same environment so you don’t get inconsistencies and how it behaves.
+							If it works on your computer, it works on every computer, it works on the live server and always acts the same.
+							2. **Sandbox Projects**
+							If your working an multiple Projects it let’s you Sandbox each one and keep them separat good for security and eliminates potential conflicts between different Projects.
+							3. **It just works**
+							And lastly it makes it easier to get going with somebody else in that projects. You don’t have to install all of the tools and dependencies to that the Project needs. You just have to spin up the virtual machine put your code inside and it works.
+
+						</aside>
+					</section>
+					<section>
+						<h2>Containers</h2>
+						<div class="container">
+							<ul>
+								<li>os</li>
+								<li>config</li>
+								<li>code</li>
+								<li>...</li>
+							</ul>
+						</div>
+						<aside class="notes">
+							Docker gives you these advantages but without that overhead and hassle of running and managing a virtual machine.
+							Instead we have containers. The code and environments are all inside the container. But a Container is not a full virtual machine.
+						</aside>
+					</section>
+					<section>
+						<h2>Docker and classic VM Comparison</h2>
+						<img class="no-boarder" data-src="images/vm-vs-docker-container.png" height="400pt" width="700pt"/>
+						<aside class="notes">
+							When you have a full virtual machine, each machine gets it full operating system including the Kernel.
+							The Kernel is like the core of the operating system and controls the low level stuff and this is quiet resource heavy on the source machine.
+
+							Container however they all use the host machines kernel and everything on top of that is still separated,
+							everything that makes a linux distribution unique, because all linux distributions ubuntu,
+							debian etc are all build on the same kernel.
+
+							Docker uses special features of the unix filesystem to create this isolated environments.
+							And as a result a Container can startup in seconds I supposed in minutes.
+							They uses few resources taking up less diskspace und using less memory.
+						</aside>
+					</section>
+					<section>
+						<h2>Image, Container, Instance Dockerfile WTF?!</h2>
+						<img class="no-boarder" data-src="images/image-container.png" height="400pt" width="700pt"/>
+
+						<aside class="notes">
+							So a container is a running instance of an image. An image is a template for creating the environment you want and a snaptshot of the system at a particular time.
+
+							So it’s got the operating System, the software, the application code all bundled up in a file.
+
+						</aside>
+					</section>
+					<section>
+						<h2>Image, Container, Instance Dockerfile WTF?!</h2>
+						<img class="no-boarder" data-src="images/dockerfile-image.png" height="400pt" width="700pt"/>
+						<aside class="notes">
+							Images are defined using a Dockerfile. A Dockerfile is a textfile with a list of steps to perform, to create the image. For example
+							- configure the operating system
+							- install the software you need
+							- copy the project files into the right places
+							- etc
+
+							So you have the Dockerfile, so you build that and you get an image which you you can run to get the containers.
+						</aside>
+					</section>
+				</section>
+				<section>
+					<section>
+					<h2>Hands on</h2>
+					<p>dockerize this presentation</p>
+					<ol>
+						<li>create Dockerfile</li>
+						<li>build it</li>
+						<li>run it</li>
+					</ol>
+					<aside class="notes">
+
+					</aside>
+					</section>
+					<section>
+						<h2>creating a Dockerfile</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+function linkify( selector ) {
+  if( supports3DTransforms ) {
+
+    var nodes = document.querySelectorAll( selector );
+
+    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
+      var node = nodes[i];
+
+      if( !node.className ) {
+        node.className += ' roll';
+      }
+    }
+  }
+}
+					</code></pre>
+						<aside class="notes">
+
+						</aside>
+					</section>
+				</section>
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'socket.io/socket.io.js', async: true },
+                    { src: 'plugin/notes-server/client.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
