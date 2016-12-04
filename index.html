@@ -342,7 +342,138 @@ docker run -d -p 80:8000 --name techtalk mnuetzel/techtalk-docker
 						</ul>
 
 						<aside class="notes">
+							Composing the application with Docker Compose
+							Compose is a tool for defining and running complex applications with Docker.
 
+							It can get pretty tedious to build the images, run and link containers using individual commands, especially when you are dealing with many. Docker Compose lets you define a multi-container application in a single file, and spin up the application with a single command.
+
+						</aside>
+					</section>
+
+					<section>
+						<h2>Let's extend this presentation application</h2>
+						<ol>
+							<li>add a loadbalancer</li>
+							<li>scale the presentation application</li>
+						</ol>
+						<img class="no-boarder" data-src="images/compose.png" height="280pt" width="400pt"/>
+						<aside class="notes">
+							Let's extend this presentation application.
+							I would like to add a loadbalancer and scale the application afterwards.
+						</aside>
+					</section>
+
+					<section>
+						<h2>The docker-compose.yml</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+      - 8000
+    networks:
+      - front-tier
+
+  lb:
+    image: dockercloud/haproxy
+    ports:
+      - 80:80
+    links:
+      - web
+    networks:
+      - front-tier
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  front-tier:
+    driver: bridge
+						</code></pre>
+						<aside class="notes">
+							The docker-compose file is written in YAML.
+							I've defined 2 Services web (our web application) and lb which is our loadbalancer.
+							Ive also created a bridged network and attached both services to it.
+						</aside>
+
+					</section>
+
+					<section>
+						<h2>Let the magic begin</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+docker-compose up -d
+						</code></pre>
+
+						<pre><code class="hljs" data-trim contenteditable>
+docker-compose scale web=3
+						</code></pre>
+						<aside class="notes">
+							With a single command, Docker Compose will build the required images,
+							expose the required ports, run and link the containers
+							as defined in the YAML.
+							All you need to do is run docker-compose up!
+							And your container application is up and running.
+						</aside>
+					</section>
+
+					<section>
+						<h2>Summary</h2>
+						<ol>
+							<li>we dockerized our application</li>
+							<li>run a virtual instance</li>
+							<li>created a cluster with a loadbalancer
+							<ul><li>...on a single machine :(</li></ul>
+							</li>
+						</ol>
+						<aside class="notes">
+							We have dockerized our application.
+							We started that virtual instance.
+							And we created a cluster, but on a single machine.
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Docker Machine and Docker Swarm</h2>
+
+						<aside class="notes">
+							Let's go forward with docker machine and docker swarm.
+							Starting with docker machine.
+						</aside>
+					</section>
+
+					<section>
+						<h2>What is Docker Machine?</h2>
+						<ul>
+							<li>installs Docker Engine on virtual hosts</li>
+							<li>manage the hosts</li>
+							<li>creates hosts</li>
+						</ul>
+
+						<aside class="notes">
+							Docker Machine is a tool that lets you install Docker Engine on virtual hosts,
+							and manage the hosts with docker-machine commands.
+							You can use Machine to create Docker hosts on your local Mac or
+							Windows box, on your company network, in your data center, or on cloud providers
+							like AWS or Digital Ocean.
+						</aside>
+					</section>
+
+					<section>
+						<h2>What is Docker Machine?</h2>
+						<ul>
+							<li>installs Docker Engine on virtual hosts</li>
+							<li>manage the hosts</li>
+							<li>creates hosts</li>
+						</ul>
+
+						<aside class="notes">
+							Docker Machine is a tool that lets you install Docker Engine on virtual hosts,
+							and manage the hosts with docker-machine commands.
+							You can use Machine to create Docker hosts on your local Mac or
+							docker build -t mnuetzel/techtalk-docker .	Windows box, on your company network, in your data center, or on cloud providers
+							like AWS or Digital Ocean.
 						</aside>
 					</section>
 				</section>
