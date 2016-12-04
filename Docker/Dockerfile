@@ -12,6 +12,5 @@ WORKDIR /docker-presentation
 RUN npm install --silent
 
 EXPOSE 8000
-USER nobody
 
 CMD ["npm", "start"]
