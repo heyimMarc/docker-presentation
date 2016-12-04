@@ -47,9 +47,9 @@
 					</section>
 					<section>
 						<ol>
-							<li>Same environment</li>
-							<li>Sandbox Projects</li>
-							<li>It just works</li>
+							<li>same environment</li>
+							<li>sandbox projects</li>
+							<li>it just works</li>
 						</ol>
 
 						<aside class="notes">
@@ -164,7 +164,7 @@ FROM &lt;image&gt@&lt;digest&gt;
 						<ul>
 							<li>must be first non-comment instruction</li>
 							<li>can appear multiple times within a single Dockerfile</li>
-							<li>The tag or digest values are optional.</li>
+							<li>the tag or digest values are optional.</li>
 						</ul>
 						<aside class="notes">
 							Let me describe the instructions I’ve used in this Dockerfile.
@@ -461,19 +461,93 @@ docker-compose scale web=3
 					</section>
 
 					<section>
-						<h2>What is Docker Machine?</h2>
-						<ul>
-							<li>installs Docker Engine on virtual hosts</li>
-							<li>manage the hosts</li>
-							<li>creates hosts</li>
-						</ul>
+						<h2>Let's create our first vHost</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+docker-machine create -d virtualbox demovhost
+						</code></pre>
 
 						<aside class="notes">
-							Docker Machine is a tool that lets you install Docker Engine on virtual hosts,
-							and manage the hosts with docker-machine commands.
-							You can use Machine to create Docker hosts on your local Mac or
-							docker build -t mnuetzel/techtalk-docker .	Windows box, on your company network, in your data center, or on cloud providers
-							like AWS or Digital Ocean.
+							Docker-machine is now creating the virtualhost with the virtualbox driver.
+							Docker-machine installs docker and is doing the ssh key exchange.
+
+							Show it in virtualbox
+							do a docker-machine ls
+							docker-machine ssh demovhost
+							docker --version
+
+							create 3 swarm nodes than go on with the presentation
+
+							docker-machine create -d virtualbox node-0
+							docker-machine create -d virtualbox node-1
+							docker-machine create -d virtualbox node-2
+						</aside>
+					</section>
+					<section>
+						<h2>Docker Swarm</h2>
+						<img class="no-boarder" data-src="images/docker-swarm-hero2.png" height="200pt" width="200pt"/>
+						<ul>
+							<li>native clustering for docker</li>
+							<li>turns a pool of docker hosts into a single</li>
+							<li>docker swarm servers docker API</li>
+						</ul>
+						<aside class="notes">
+							Docker Swarm is native clustering for Docker.
+							It turns a pool of Docker hosts into a single, virtual Docker host.
+							Because Docker Swarm serves the standard Docker API, any tool that already communicates
+							with a Docker daemon can use Swarm to transparently scale to multiple hosts.
+						</aside>
+					</section>
+
+					<section>
+						<h2>Bringing the presentation application to the swarm</h2>
+						<img class="no-boarder" data-src="images/docker-swarm-hero2.png" height="200pt" width="200pt"/>
+						<ol>
+							<li>lets create 3 vHosts</li>
+							<li>setup the swarm</li>
+							<li>deploy the application</li>
+						</ol>
+						<aside class="notes">
+							docker-machine ssh node-0
+							docker swarm init --advertise-addr eth1
+							get token and execute on other machine
+							check with: docker node ls
+							docker service create --name techtalk -p 80:8000 --replicas 3 marcnuetzel/techtalk-docker
+							docker service ls
+							docker-machine env node-0
+							show website
+							docker service scale techtalk=9
+							login to every node  and show container with docker ps
+							leave swarm and show that swarm moves the container
+							docker swarm leave
+						</aside>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Where can docker support?</h2>
+						<ol>
+							<li>Development
+							<ul>
+								<li>keeps you local environment clean</li>
+								<li>saves time (setup oracle database in seconds)</li>
+							</ul>
+							</li>
+							<li>Release
+								<ul>
+									<li>simplifies your release notes (just run the container)</li>
+									<li>don't worry about inconsistencies between dev ond prod environments anymore</li>
+								</ul>
+							</li>
+						</ol>
+						<aside class="notes">
+
+						</aside>
+					</section>
+
+					<section data-background="http://i.giphy.com/90F8aUepslB84.gif">
+						<h2 style="color: white">Have fun swimming with the whales!</h2>
+						<aside class="notes">
+
 						</aside>
 					</section>
 				</section>
