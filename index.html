@@ -23,6 +23,7 @@
 		</script>
 	</head>
 	<body>
+	<?php echo "Hello ".($_ENV["NAME"]?$_ENV["NAME"]:"world")."!"; ?>
 	<div class="logo"></div>
 		<div class="reveal">
 
@@ -134,21 +135,229 @@
 					<section>
 						<h2>creating a Dockerfile</h2>
 						<pre><code class="hljs" data-trim contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
+FROM node:4.6.2-slim
 
-    var nodes = document.querySelectorAll( selector );
+MAINTAINER Marc Nützel &lt;marc.nuetzel@dbschenker.com&gt;
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git && \
+    rm -rf /var/lib/apt/lists/* && \
+    git clone https://github.com/heyimMarc/docker-presentation.git
 
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-      var node = nodes[i];
+WORKDIR /docker-presentation
+RUN npm install --silent
+EXPOSE 8000
+USER nobody
 
-      if( !node.className ) {
-        node.className += ' roll';
-      }
-    }
-  }
-}
+CMD ["npm", "start"]
 					</code></pre>
+						<aside class="notes">
+							Ok let’s start with creating a Dockerfile.
+						</aside>
+					</section>
+					<section>
+						<h2>FROM</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+FROM &lt;image&gt;
+FROM &lt;image&gt:&lt;tag&gt;
+FROM &lt;image&gt@&lt;digest&gt;
+						</code></pre>
+						<ul>
+							<li>must be first non-comment instruction</li>
+							<li>can appear multiple times within a single Dockerfile</li>
+							<li>The tag or digest values are optional.</li>
+						</ul>
+						<aside class="notes">
+							Let me describe the instructions I’ve used in this Dockerfile.
+
+							The FROM instruction sets the Base Image for subsequent instructions.
+							As such, a valid Dockerfile must have FROM as its first instruction.
+							The image can be any valid image – it is especially easy to start
+							by pulling an image from the Public Repositories.
+						</aside>
+					</section>
+					<section>
+						<h2>MAINTAINER</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+MAINTAINER &lt;name&gt;
+						</code></pre>
+						just the author of the image ;)
+						<aside class="notes">
+							The MAINTAINER instruction allows you to set the Author field of the generated images.
+						</aside>
+					</section>
+					<section>
+						<h2>RUN</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+RUN &lt;command&gt;
+						</code></pre>
+						<ul>
+							<li>will execute commands</li>
+							<li>commits the result to the image</li>
+						</ul>
+						<aside class="notes">
+							The RUN instruction will execute any commands in a new layer on top of the current image and commit
+							the results. The resulting committed image will be
+							used for the next step in the Dockerfile.
+						</aside>
+					</section>
+					<section>
+						<h2>WORKDIR</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+WORKDIR /path/to/workdir
+						</code></pre>
+						<ul>
+							<li>sets the working directory for
+								<ul>
+									<li>RUN</li>
+									<li>CMD</li>
+									<li>ENTRYPOINT</li>
+									<li>COPY</li>
+									<li>ADD</li>
+								</ul></li>
+							<li>creates directory if doesn't exists</li>
+						</ul>
+						<aside class="notes">
+							The WORKDIR instruction sets the working directory for any RUN, CMD, ENTRYPOINT,
+							COPY and ADD instructions that follow it in the Dockerfile.
+							If the WORKDIR doesn’t exist, it will be created even if it’s not used in any subsequent
+							Dockerfile instruction.
+						</aside>
+					</section>
+
+					<section>
+						<h2>EXPOSE</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+EXPOSE &lt;port&gt;
+						</code></pre>
+						<ul>
+							<li>informs Docker that container listens</li>
+							<li>does not make the ports accessible on host</li>
+						</ul>
+						<aside class="notes">
+							The EXPOSE instruction informs Docker that the container listens on the specified
+							network ports at runtime.
+							EXPOSE does not make the ports of the container accessible to the host.
+							To do that, you must use either the -p flag to publish a range of ports
+							or the -P flag to publish all of the exposed ports.
+							You can expose one port number and publish it externally under another number.
+						</aside>
+					</section>
+
+					<section>
+						<h2>CMD</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+CMD ["executable","param1","param2"]
+						</code></pre>
+						<ul>
+							<li>provide defaults for an executing container</li>
+							<li>there can only be one CMD instruction in a Dockerfile</li>
+							<img class="no-boarder" data-src="images/highlander.jpg" height="300pt" width="400pt"/>
+						</ul>
+						<aside class="notes">
+							The main purpose of a CMD is to provide defaults for an executing container.
+							These defaults can include an executable, or they can omit the executable,
+							in which case you must specify an ENTRYPOINT instruction as well.
+							But we will not go into the ENTRYPOINT instruction in this Techtalk.
+
+							CMD is like the Highlander, there can only be one!
+						</aside>
+					</section>
+
+					<section>
+						<h2>USER</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+USER daemon
+						</code></pre>
+						<ul>
+							<li>sets name or UID to use when running the image</li>
+							<li>and for any RUN, CMD and ENTRYPOINT instrcution that follows</li>
+						</ul>
+						<aside class="notes">
+							The USER instruction sets the user name or UID to use when
+							running the image and for any RUN, CMD and ENTRYPOINT instructions that
+							follow it in the Dockerfile.
+						</aside>
+					</section>
+
+					<section>
+						<h2>Bla! bla! bla!, please build the image</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+docker build -t mnuetzel/techtalk-docker .
+						</code></pre>
+						<aside class="notes">
+
+						</aside>
+					</section>
+
+					<section>
+						<h2>What happens during the build?</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+Sending build context to Docker daemon 2.048 kB
+						</code></pre>
+						<aside class="notes">
+							So what are we seeing here?
+							Docker starts sending the build context to the Docker daemon.
+							What does that mean?
+							Quick and dirty answer: the client is tar/compressing the directory (and all subdirectories)
+							where you executed docker build. Yeah, that's right. If you execute this in your root directory,
+							your whole drive will get tar'd and sent to the docker daemon.
+							Generally that's a mistake you only make once.
+						</aside>
+					</section>
+					<section>
+						<h2>Layering</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+Step 1 : FROM node:4.6.2-slim
+ ---> ac75fb1960cc
+Step 2 : MAINTAINER Marc Nützel &lt;marc.nuetzel@dbschenker.com&gt;
+ ---> Using cache
+ ---> 16d25b1aae18
+Step 3 : RUN apt-get update &&     apt-get install -y --no-install-recommends         git &&     rm -rf /var/lib/apt/lists/* &&     git clone https://github.com/heyimMarc/docker-presentation.git
+ ---> Using cache
+ ---> 42ee8cce8add
+
+						</code></pre>
+						<aside class="notes">
+							The final image consists of n intermediate images as we can see.
+							Those layers (or intermediate images or whatever you call them) have some benefits.
+							Once we build them, Docker will reuse them for new builds. This makes the builds much faster.
+							This is great for continous integration, where we want to build an image at the end of each successful build.
+							But the build is not only faster, the images are also smaller, since intermediate images are shared
+							between images.
+
+							But maybe the best things are rollbacks: since every image contains all of its building steps, we can easily go back to a previous step if we want so. This can be done tagging a certain layer.
+
+						</aside>
+					</section>
+
+					<section>
+						<h2>Run the container</h2>
+						<pre><code class="hljs" data-trim contenteditable>
+docker run -d -p 80:8000 --name techtalk mnuetzel/techtalk-docker
+						</code></pre>
+						<aside class="notes">
+							So let’s start the container, we will bind the exposed port 8000 to port 80 of my local machine and run this container detached. At least we give the container a name.
+
+							Start the container and show it with  docker ps -a
+							Show the application in browser, stop container, reload browser.
+
+							As u can see, the container is running and serving the application.
+							We have now dockerized our first application.
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>docker-compose</h2>
+
+						<ul>
+							<li>defining and running complex applications with Docker</li>
+							<li>defines a multi-container application in a single file</li>
+							<li>spins them up in a single command</li>
+						</ul>
+
 						<aside class="notes">
 
 						</aside>

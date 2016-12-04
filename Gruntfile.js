@@ -21,6 +21,25 @@ module.exports = function(grunt) {
 			files: [ 'test/*.html' ]
 		},
 
+        conditional: {
+            file: 'host.html'
+        },
+
+        "file-creator": {
+            "conditional": {
+                files: [
+                    {
+                        file: '<%= conditional.file %>',
+                        method: function(fs, fd, done) {
+                            var devip = require('dev-ip');
+                            fs.writeSync(fd, '<!doctype html><html><head><title>My Host</title></head><body>'+devip()+'</body></html>');
+                            done();
+                        }
+                    }
+                ]
+            }
+        },
+
 		uglify: {
 			options: {
 				banner: '<%= meta.banner %>\n'
@@ -148,10 +167,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks( 'grunt-contrib-connect' );
 	grunt.loadNpmTasks( 'grunt-autoprefixer' );
 	grunt.loadNpmTasks( 'grunt-zip' );
+    grunt.loadNpmTasks('grunt-file-creator');
 
 	// Default task
 	grunt.registerTask( 'default', [ 'css', 'js' ] );
-
+  //  grunt.registerTask('default', ['php']);
 	// JS task
 	grunt.registerTask( 'js', [ 'jshint', 'uglify', 'qunit' ] );
 
@@ -168,7 +188,8 @@ module.exports = function(grunt) {
 	grunt.registerTask( 'package', [ 'default', 'zip' ] );
 
 	// Serve presentation locally
-	grunt.registerTask( 'serve', [ 'connect', 'watch' ] );
+	grunt.registerTask( 'serve', [ 'file-creator' , 'connect', 'watch' ] );
+    //grunt.registerTask( 'serve', [ 'file-creator'] );
 
 	// Run tests
 	grunt.registerTask( 'test', [ 'jshint', 'qunit' ] );
