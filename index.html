@@ -147,7 +147,6 @@ RUN apt-get update && \
 WORKDIR /docker-presentation
 RUN npm install --silent
 EXPOSE 8000
-USER nobody
 
 CMD ["npm", "start"]
 					</code></pre>
@@ -261,22 +260,6 @@ CMD ["executable","param1","param2"]
 							But we will not go into the ENTRYPOINT instruction in this Techtalk.
 
 							CMD is like the Highlander, there can only be one!
-						</aside>
-					</section>
-
-					<section>
-						<h2>USER</h2>
-						<pre><code class="hljs" data-trim contenteditable>
-USER daemon
-						</code></pre>
-						<ul>
-							<li>sets name or UID to use when running the image</li>
-							<li>and for any RUN, CMD and ENTRYPOINT instrcution that follows</li>
-						</ul>
-						<aside class="notes">
-							The USER instruction sets the user name or UID to use when
-							running the image and for any RUN, CMD and ENTRYPOINT instructions that
-							follow it in the Dockerfile.
 						</aside>
 					</section>
 
